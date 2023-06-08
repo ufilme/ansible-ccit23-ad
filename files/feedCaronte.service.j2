@@ -1,0 +1,15 @@
+[Unit]
+Description=Feed Caronte Script
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/bin/bash /opt/feedCaronte.sh {{ hostvars['bastion'].ansible_host }} {{ nic }} 10 /tmp/
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

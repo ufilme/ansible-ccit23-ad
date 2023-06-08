@@ -1,0 +1,29 @@
+- name: Install tcpdump and inotifywait
+  become: yes
+  ansible.builtin.package:
+    name:
+      - tcpdump
+      - inotify-tools
+    state: latest
+    update_cache: true
+
+- name: Copy feedCaronte script
+  become: yes
+  ansible.builtin.template:
+    src: files/feedCaronte.sh.j2
+    dest: /opt/feedCaronte.sh
+
+- name: Copy feedCaronte service
+  become: yes
+  ansible.builtin.template:
+    src: files/feedCaronte.service.j2
+    dest: /etc/systemd/system/feedCaronte.service
+    mode: 644
+
+- name: Enable and start service feedCaronte
+  become: yes
+  ansible.builtin.systemd:
+    name: feedCaronte
+    state: started
+    enabled: yes
+    daemon_reload: true

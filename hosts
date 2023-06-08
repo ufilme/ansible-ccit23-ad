@@ -1,0 +1,11 @@
+base:
+  vars:
+    flag_regex: "/^[A-Z0-9]{31}=$/"
+    nic: ens3
+  hosts:
+    bastion:
+      ansible_host: 141.147.94.202
+      ansible_user: ubuntu
+    vuln:
+      ansible_host: 141.147.94.202
+      ansible_user: ubuntu

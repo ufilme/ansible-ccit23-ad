@@ -1,0 +1,78 @@
+- name: Install git and docker dependencies
+  become: yes
+  ansible.builtin.package:
+    name:
+      - git
+      - ca-certificates
+      - curl
+      - gnupg
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+    update_cache: true
+
+- name: Add Docker GPG apt Key
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  become: yes
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  become: yes
+  apt:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+
+- name: Install Docker Module for Python
+  pip:
+    name:
+      - docker
+      - docker-compose
+
+- name: Adding user to docker group
+  become: yes
+  user:
+    name: ubuntu
+    groups: docker
+    append: yes
+
+- name: Reset ssh connection to allow user changes to affect ansible user
+  ansible.builtin.meta:
+    reset_connection
+
+- name: Clone caronte repository
+  ansible.builtin.git:
+    repo: https://github.com/eciavatta/caronte.git
+    dest: ./caronte
+
+- name: Docker compose up
+  community.docker.docker_compose:
+    project_src: caronte
+    files: docker-compose.yml
+    recreate: "always"
+
+- name: Caronte setup
+  ansible.builtin.uri:
+    url: "http://{{ hostvars['bastion'].ansible_host }}:3333/setup"
+    status_code: [202, 404, 200]
+    method: post
+    body_format: json
+    body:
+      config:
+        server_address: "{{ hostvars['vuln'].ansible_host }}"
+        flag_regex: "{{ flag_regex }}"
+        auth_required: true
+      accounts:
+        admin: "{{ caronte_pwd }}" 

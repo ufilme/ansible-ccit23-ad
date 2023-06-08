@@ -1,0 +1,20 @@
+---
+- hosts: all
+  vars_prompt:
+    - name: pwd
+      prompt: Enter password for Caronte GUI
+      private: true
+      confirm: true
+  tasks:
+    - ansible.builtin.set_fact:
+        caronte_pwd: "{{ pwd }}"
+
+- hosts: bastion
+  tasks:
+    - name: Install Caronte
+      ansible.builtin.import_tasks: tasks/bastion/caronte.yaml 
+
+- hosts: vuln    
+  tasks:  
+    - name: Install Feed Caronte Script
+      ansible.builtin.import_tasks: tasks/vuln/feedCaronte.yaml
