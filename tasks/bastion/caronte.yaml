@@ -63,6 +63,10 @@
     files: docker-compose.yml
     recreate: "always"
 
+- name: Pause for 10 seconds to ensure container start
+  ansible.builtin.pause:
+    seconds: 10
+
 - name: Caronte setup
   ansible.builtin.uri:
     url: "http://{{ hostvars['bastion'].ansible_host }}:3333/setup"

@@ -4,8 +4,8 @@ base:
     nic: ens3
   hosts:
     bastion:
-      ansible_host: 141.147.94.202
+      ansible_host: 143.47.248.119
       ansible_user: ubuntu
     vuln:
-      ansible_host: 141.147.94.202
+      ansible_host: 143.47.248.119
       ansible_user: ubuntu
