@@ -1,0 +1,47 @@
+- name: Clone Destructive Farm repository
+  become: yes
+  ansible.builtin.git:
+    repo: https://github.com/borzunov/DestructiveFarm
+    dest: /opt/destructive_farm
+    force: yes
+
+- name: Install Destructive Farm python requirements
+  ansible.builtin.pip:
+    requirements: /opt/destructive_farm/server/requirements.txt
+
+- name: Delete flags.sqlite database if exists
+  become: yes
+  file:
+    path: /opt/destructive_farm/server/flags.sqlite
+    state: absent
+
+- name: Copy Destructive Farm config.py
+  become: yes
+  ansible.builtin.template:
+    src: files/config.py.j2
+    dest: /opt/destructive_farm/server/config.py
+    mode: "644"
+
+- name: Change ownership
+  become: yes
+  file:
+    path: /opt/destructive_farm
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    state: directory
+    recurse: yes
+
+- name: Copy Destructive Farm service
+  become: yes
+  ansible.builtin.template:
+    src: files/destructive_farm.service
+    dest: /etc/systemd/system/destructive_farm.service
+    mode: 644
+
+- name: Enable Destructive Farm service
+  become: yes
+  ansible.builtin.systemd:
+    name: destructive_farm
+    state: started
+    enabled: yes
+    daemon_reload: true

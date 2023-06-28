@@ -1,0 +1,15 @@
+[Unit]
+Description=Destructive Farm
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User={{ ansible_user_id }}
+ExecStart=/bin/bash /opt/destructive_farm/server/start_server.sh
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

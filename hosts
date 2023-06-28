@@ -1,11 +1,15 @@
 base:
   vars:
-    flag_regex: "/^[A-Z0-9]{31}=$/"
+    flags_regex: "/^[A-Z0-9]{31}=$/"
+    flags_endpoint: "http://10.10.0.1:8080/flags"
+    team_token: "f697d3753840b8ac745721a67a20016d"
+    team_id: 60
+    teams_number: 43
     nic: ens3
   hosts:
     bastion:
-      ansible_host: 143.47.248.119
-      ansible_user: ubuntu
+      ansible_host: 130.136.3.50
+      ansible_user: debian
     vuln:
-      ansible_host: 143.47.248.119
-      ansible_user: ubuntu
+      ansible_host: 130.136.3.50
+      ansible_user: debian
