@@ -10,19 +10,19 @@
       - virtualenv
       - python3-setuptools
     state: latest
-    update_cache: true
 
-- name: Add Docker GPG apt Key
+- name: Add the Docker apt repository
   become: yes
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
+  block:
+    - name: Download the Docker key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/trusted.gpg.d/docker.asc
 
-- name: Add Docker Repository
-  become: yes
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu focal stable
-    state: present
+    - name: Add the Docker repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        state: present
 
 - name: Update apt and install docker-ce
   become: yes
@@ -44,7 +44,7 @@
 - name: Adding user to docker group
   become: yes
   user:
-    name: ubuntu
+    name: "{{ hostvars['bastion'].ansible_user_id }}"
     groups: docker
     append: yes
 
@@ -76,7 +76,7 @@
     body:
       config:
         server_address: "{{ hostvars['vuln'].ansible_host }}"
-        flag_regex: "{{ flag_regex }}"
+        flag_regex: "{{ flags_regex }}"
         auth_required: true
       accounts:
-        admin: "{{ caronte_pwd }}" 
+        admin: "{{ pwd }}" 

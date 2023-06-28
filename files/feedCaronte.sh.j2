@@ -24,7 +24,7 @@ echo $TCPDUMP_PID
 inotifywait -q -m "$PCAP_DIR" -e close_write |
     while read dir action file; do
       echo "[$(date +%H:%M:%S)] The file $file appeared in directory $dir via $action"
-      curl_output=$(curl -sS -X POST "http://$CARONTE_IP:3333/api/pcap/upload" -H "Content-Type: multipart/form-data" -F "file=@$dir/$file" -F "flush_all=false" --user "admin:{{ caronte_pwd }}")
+      curl_output=$(curl -sS -X POST "http://$CARONTE_IP:3333/api/pcap/upload" -H "Content-Type: multipart/form-data" -F "file=@$dir/$file" -F "flush_all=false" --user "admin:{{ pwd }}")
       echo "[CARONTE] $curl_output"
       rm "$dir/$file" 
       echo

@@ -1,18 +1,20 @@
 ---
 - hosts: all
   vars_prompt:
-    - name: pwd
-      prompt: Enter password for Caronte GUI
+    - name: password
+      prompt: Enter global password for Caronte and Destructive Farm
       private: true
       confirm: true
   tasks:
     - ansible.builtin.set_fact:
-        caronte_pwd: "{{ pwd }}"
+        pwd: "{{ password }}"
 
 - hosts: bastion
   tasks:
     - name: Install Caronte
       ansible.builtin.import_tasks: tasks/bastion/caronte.yaml 
+    - name: Install Destructive Farm
+      ansible.builtin.import_tasks: tasks/bastion/destructive_farm.yaml
 
 - hosts: vuln    
   tasks:  

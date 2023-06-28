@@ -5,7 +5,6 @@
       - tcpdump
       - inotify-tools
     state: latest
-    update_cache: true
 
 - name: Copy feedCaronte script
   become: yes
